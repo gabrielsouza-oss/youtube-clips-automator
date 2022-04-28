@@ -36,7 +36,7 @@ def upload_video(video_path, url, title, description, tags, thumb_path):
         f.close()
     
     # Upload video to Youtube
-    command = "./youtubeuploader -headlessAuth -oAuthPort 8070 -filename "+video_path+" -metaJSON "+metadata_path+" -thumbnail "+thumb_path+""
+    command = "./youtubeuploader -oAuthPort 8070 -filename "+video_path+" -metaJSON "+metadata_path+" -thumbnail "+thumb_path+""
     output_file = subprocess.call(command, shell=True)
     if (output_file != 0): exit(1)
 
