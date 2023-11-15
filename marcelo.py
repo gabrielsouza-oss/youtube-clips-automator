@@ -9,42 +9,9 @@ import sys
 from datetime import datetime, timedelta
 import time
 
-def upload_video(num, video_path, url, title, description, tags, thumb_path):
+def upload_video(file_name, thumb, title, desc):
     
-    metadata_path = './output/metadata.json'
-    now = datetime.now() # current date and time
-
-    # scheduling post calculation
-    interval = 3
-    hours = (num*interval)
-    hours_added = timedelta(hours = hours)
-    future_date_and_time = now + hours_added
-    
-    description = str(description)+ \
-    '\\n\\n-- Episodio completo: '+str(url) +\
-    '\\n\\n-- Se inscreva, curta, compartilhe! Deixe seu comentário' +\
-    '\\n-- Obrigado por assistir!'
-
-    # youtubeuploader metadata
-    metadata = '{ "title": "'+str(title)+'", \
-    "description": "'+description+'", \
-    "tags": ["'+str(tags).replace(' ','","')+'"], \
-    "privacyStatus": "private", \
-    "madeForKids": false, \
-    "embeddable": true, \
-    "license": "creativeCommon", \
-    "publicStatsViewable": true, \
-    "publishAt": "'+str(future_date_and_time.strftime("%Y-%m-%dT%H:%M:%S+03:00"))+'", \
-    "categoryId": "28", \
-    "playlistTitles": ["Cortes Morning Crypto"], \
-    "language": "pt-BR" }'
-
-    with open(metadata_path, 'w') as f:
-        f.write(metadata)
-        f.close()
-    
-    # Upload video to Youtube
-    command = "./youtubeuploader -filename "+video_path+" -metaJSON "+metadata_path+" -thumbnail "+thumb_path+""
+    command = f"cd /content && python3 /content/Youtube-Auto-Upload/youtube.py --file='{file_name}' --thumb='{thumb}' --title='{title}' --description='{desc}' --privacyStatus='private'"
     output_file = subprocess.call(command, shell=True)
     if (output_file != 0): exit(1)
 
@@ -120,7 +87,7 @@ def main():
                     thumb = thumb_generator(output_filename, title)
                     print("Selected thumb: %s" % (thumb))
                     if (thumb != None):
-                       #upload_video(row_number, output_filename_final, url, title, description, tags, thumb)
+                       upload_video(output_filename_final, thumb, title, description)
                 
                 # Move all video files to dir/
                 move_files(title)
